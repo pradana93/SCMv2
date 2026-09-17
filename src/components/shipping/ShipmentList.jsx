@@ -265,8 +265,8 @@ export default function ShipmentList({ shipments, loading, onUpdate, onDelete, o
       </div>;
     })}
     <AccuracyDialog open={!!accuracyId} onClose={() => setAccuracyId(null)} onSubmit={submitAccuracy} outletName={accuracyItem?.outlet_name} accuracy={accuracyItem?.accuracy} complaintReason={accuracyItem?.complaint_reason} complaintType={accuracyItem?.complaint_type} complaintCategory={accuracyItem?.complaint_category} />
-    <ProcessConfirmDialog open={!!confirmProcess} onClose={() => setConfirmProcess(null)} onSubmit={submitProcessConfirm} title={confirmCfg?.title} description={confirmCfg?.description} outletName={confirmProcess?.item?.outlet_name} fields={confirmFields} />
-    <ProcessConfirmDialog open={!!rescheduleItem} onClose={() => setRescheduleItem(null)} onSubmit={submitReschedule} title={POPUPS.reschedule.title} description={POPUPS.reschedule.description} outletName={rescheduleItem?.outlet_name} fields={POPUPS.reschedule.fields} />
+    <ProcessConfirmDialog open={!!confirmProcess} onClose={() => setConfirmProcess(null)} onSubmit={submitProcessConfirm} title={confirmCfg?.title} description={confirmCfg?.description} outletName={confirmProcess?.item?.outlet_name} fields={confirmFields} draftKey={confirmProcess?.item ? `shipment:${confirmProcess.item.id}:${confirmProcess.target || "step"}` : ""} />
+    <ProcessConfirmDialog open={!!rescheduleItem} onClose={() => setRescheduleItem(null)} onSubmit={submitReschedule} title={POPUPS.reschedule.title} description={POPUPS.reschedule.description} outletName={rescheduleItem?.outlet_name} fields={POPUPS.reschedule.fields} draftKey={rescheduleItem ? `shipment:${rescheduleItem.id}:reschedule` : ""} />
     <DoDetailDialog item={doItem} onClose={closeDo} />
     <ActualArrivalDialog open={!!actualArrivalItem} item={actualArrivalItem} onClose={() => setActualArrivalItem(null)} onCommit={(vals) => actualArrivalItem && submitActualArrival(actualArrivalItem, vals)} />
     <EditEtaDialog open={!!etaEditOutlet} outletName={etaEditOutlet || ""} onClose={() => setEtaEditOutlet(null)} />

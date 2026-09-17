@@ -1,35 +1,148 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Loader2, Upload } from "lucide-react";
+import { Loader2, Upload, RotateCcw } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { formatTonnage } from "./shippingUtils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export default function ProcessConfirmDialog({ open, onClose, onSubmit, title, description, outletName, fields = [] }) {
+// Drafts survive a page reload (camera app killing the tab, session expiry,
+// accidental refresh): values + already-uploaded photo URLs are restored.
+const DRAFT_TTL_MS = 7 * 24 * 3600 * 1000;
+const draftStorageKey = (draftKey) => `scm_form_draft:${draftKey}`;
+function loadDraft(draftKey) {
+  if (!draftKey) return null;
+  try {
+    const raw = localStorage.getItem(draftStorageKey(draftKey));
+    if (!raw) return null;
+    const d = JSON.parse(raw);
+    if (!d || Date.now() - (d.savedAt || 0) > DRAFT_TTL_MS) return null;
+    return d;
+  } catch {
+    return null;
+  }
+}
+function saveDraft(draftKey, draft) {
+  if (!draftKey) return;
+  try {
+    localStorage.setItem(draftStorageKey(draftKey), JSON.stringify({ ...draft, savedAt: Date.now() }));
+  } catch {
+    // storage full/blocked — form still works in memory
+  }
+}
+function clearDraft(draftKey) {
+  if (!draftKey) return;
+  try {
+    localStorage.removeItem(draftStorageKey(draftKey));
+  } catch {
+    // ignore
+  }
+}
+
+export default function ProcessConfirmDialog({ open, onClose, onSubmit, title, description, outletName, fields = [], draftKey = "" }) {
   const [values, setValues] = useState({});
   const [files, setFiles] = useState({});
+  const [fileNames, setFileNames] = useState({});
+  const [uploads, setUploads] = useState({});
   const [koliStatus, setKoliStatus] = useState("sesuai");
   const [tonnageStatus, setTonnageStatus] = useState("sesuai");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const inflight = useRef({});
 
   useEffect(() => {
     if (open) {
       const init = {};
       for (const f of fields) init[f.key] = f.type === "koli_verify" ? String(f.sourceValue ?? "") : (f.defaultValue != null ? String(f.defaultValue) : "");
-      setValues(init);
+      let restored = null;
+      try {
+        restored = loadDraft(draftKey);
+      } catch {
+        restored = null;
+      }
+      setValues(restored && restored.values ? { ...init, ...restored.values } : init);
+      setKoliStatus((restored && restored.koliStatus) || "sesuai");
+      setTonnageStatus((restored && restored.tonnageStatus) || "sesuai");
       setFiles({});
-      setKoliStatus("sesuai");
-      setTonnageStatus("sesuai");
+      setFileNames((restored && restored.fileNames) || {});
+      const doneUploads = {};
+      for (const [k, url] of Object.entries((restored && restored.fileUrls) || {})) {
+        if (url) doneUploads[k] = { status: "done", url };
+      }
+      setUploads(doneUploads);
       setError("");
     }
   }, [open]);
 
+  // Autosave draft while the dialog is open
+  useEffect(() => {
+    if (!open || !draftKey) return;
+    const fileUrls = {};
+    for (const [k, u] of Object.entries(uploads)) {
+      if (u && u.status === "done" && u.url) fileUrls[k] = u.url;
+    }
+    saveDraft(draftKey, { values, koliStatus, tonnageStatus, fileUrls, fileNames });
+  }, [open, draftKey, values, koliStatus, tonnageStatus, uploads, fileNames]);
+
+  const uploadFile = async (key, file) => {
+    if (!file) return null;
+    // De-dupe concurrent uploads of the same field
+    if (inflight.current[key]) {
+      try {
+        return await inflight.current[key];
+      } catch {
+        return null;
+      }
+    }
+    const p = (async () => {
+      setUploads((u) => ({ ...u, [key]: { status: "uploading" } }));
+      try {
+        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+        setUploads((u) => ({ ...u, [key]: { status: "done", url: file_url } }));
+        return file_url;
+      } catch (e) {
+        setUploads((u) => ({ ...u, [key]: { status: "error", error: (e && e.message) || "Upload gagal" } }));
+        return null;
+      } finally {
+        delete inflight.current[key];
+      }
+    })();
+    inflight.current[key] = p;
+    return p;
+  };
+
+  const handleFileSelect = (key, file) => {
+    if (!file) return;
+    setFiles((prev) => ({ ...prev, [key]: file }));
+    setFileNames((prev) => ({ ...prev, [key]: file.name }));
+    setError("");
+    uploadFile(key, file);
+  };
+
   const submit = async (e) => {
     e.preventDefault();
+    // Wait for any in-progress photo uploads before validating
+    const pending = Object.keys(inflight.current);
+    if (pending.length) {
+      setError("Menunggu upload foto selesai...");
+      try {
+        await Promise.all(Object.values(inflight.current).map((p) => p.catch(() => null)));
+      } catch {
+        // fall through to validation below
+      }
+    }
     for (const f of fields) {
       if (f.type === "file") {
-        if (!files[f.key]) { setError(`${f.helpText || f.label} wajib diunggah.`); return; }
+        let url = uploads[f.key] && uploads[f.key].url;
+        if (!url && files[f.key]) {
+          // Fallback: file was picked but never uploaded (e.g. offline at pick time)
+          setError("Mengunggah foto...");
+          url = await uploadFile(f.key, files[f.key]);
+        }
+        if (!url) {
+          const failed = uploads[f.key] && uploads[f.key].status === "error";
+          setError(failed ? `Upload ${f.helpText || f.label} gagal. Ketuk Coba Lagi.` : `${f.helpText || f.label} wajib diunggah.`);
+          return;
+        }
       } else if (f.type === "koli_verify") {
         if (koliStatus === "tidak_sesuai") {
           const v = String(values[f.key] ?? "").trim();
@@ -60,8 +173,7 @@ export default function ProcessConfirmDialog({ open, onClose, onSubmit, title, d
       const payload = {};
       for (const f of fields) {
         if (f.type === "file") {
-          const { file_url } = await base44.integrations.Core.UploadFile({ file: files[f.key] });
-          payload[f.key] = file_url;
+          payload[f.key] = uploads[f.key].url;
         } else if (f.type === "koli_verify") {
           payload[`${f.key}_status`] = koliStatus;
           payload[f.key] = koliStatus === "sesuai" ? Number(f.sourceValue) || 0 : Number(values[f.key]);
@@ -77,12 +189,40 @@ export default function ProcessConfirmDialog({ open, onClose, onSubmit, title, d
         }
       }
       await onSubmit(payload);
+      clearDraft(draftKey);
       onClose();
     } catch { setError("Gagal menyimpan. Silakan coba lagi."); }
     finally { setSubmitting(false); }
   };
 
   const inputClass = "mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
+
+  const renderFileField = (f) => {
+    const up = uploads[f.key] || { status: "idle" };
+    const displayName = (files[f.key] && files[f.key].name) || fileNames[f.key] || "";
+    return (
+      <div key={f.key} className="text-sm font-medium">
+        {f.label}{f.helpText && <span className="block text-xs font-normal text-slate-500">Foto bertuliskan: {f.helpText}</span>}
+        <div className="mt-1.5 flex items-center gap-3">
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold transition hover:bg-slate-50">
+            <Upload className="h-4 w-4" />Pilih File
+            <input type="file" accept="image/*,.pdf" className="hidden" onChange={(e) => handleFileSelect(f.key, e.target.files?.[0] || null)} />
+          </label>
+          <span className="text-sm text-slate-500">
+            {up.status === "uploading" && <span className="inline-flex items-center gap-1.5"><Loader2 className="h-4 w-4 animate-spin" />Mengunggah...</span>}
+            {up.status === "done" && <span className="text-emerald-600">Terunggah{displayName ? `: ${displayName}` : ""}</span>}
+            {up.status === "error" && <span className="text-red-600">Upload gagal{displayName ? `: ${displayName}` : ""}</span>}
+            {up.status !== "uploading" && up.status !== "done" && up.status !== "error" && (displayName || "Belum ada file")}
+          </span>
+        </div>
+        {up.status === "error" && (
+          <button type="button" onClick={() => files[f.key] && uploadFile(f.key, files[f.key])} className="mt-1.5 inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50">
+            <RotateCcw className="h-3.5 w-3.5" />Coba Lagi
+          </button>
+        )}
+      </div>
+    );
+  };
 
   return <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
     <DialogContent className="sm:max-w-md">
@@ -94,16 +234,7 @@ export default function ProcessConfirmDialog({ open, onClose, onSubmit, title, d
       <form onSubmit={submit} className="space-y-4">
         {fields.map((f) => {
           if (f.type === "file") {
-            return <div key={f.key} className="text-sm font-medium">
-              {f.label}{f.helpText && <span className="block text-xs font-normal text-slate-500">Foto bertuliskan: {f.helpText}</span>}
-              <div className="mt-1.5 flex items-center gap-3">
-                <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold transition hover:bg-slate-50">
-                  <Upload className="h-4 w-4" />Pilih File
-                  <input type="file" accept="image/*,.pdf" className="hidden" onChange={(e) => setFiles((p) => ({ ...p, [f.key]: e.target.files?.[0] || null }))} />
-                </label>
-                <span className="text-sm text-slate-500">{files[f.key] ? files[f.key].name : "Belum ada file"}</span>
-              </div>
-            </div>;
+            return renderFileField(f);
           }
           if (f.type === "koli_verify") {
             return <div key={f.key}>
