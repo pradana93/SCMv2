@@ -17,11 +17,11 @@ export default function KomplainListDialog({ open, onClose, shipments = [] }) {
               return (
                 <div key={s.id} className="rounded-xl border border-slate-200 p-3">
                   <div className="flex items-center justify-between gap-2">
-                    <p className="truncate font-semibold">{s.outlet_name}</p>
+                    <p className="min-w-0 flex-1 truncate font-semibold">{s.outlet_name}</p>
                     <span className={`inline-flex shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold ${meta.className}`}>{meta.label}</span>
                   </div>
-                  <p className="mt-1 text-xs text-slate-400">{s.delivery_date} · Armada: {s.fleet || "-"} · {s.warehouse}</p>
-                  <p className="mt-1 text-xs text-slate-500">Tonase: {formatTonnage(s.tonnage)}{s.checker_name ? ` · Checker: ${s.checker_name}` : ""}{s.do_number ? ` · DO: ${s.do_number}` : ""}</p>
+                  <p className="mt-1 break-words text-xs text-slate-400">{s.delivery_date} · Armada: {s.fleet || "-"} · {s.warehouse}</p>
+                  <p className="mt-1 break-words text-xs text-slate-500">Tonase: {formatTonnage(s.tonnage)}{s.checker_name ? ` · Checker: ${s.checker_name}` : ""}{s.do_number ? ` · DO: ${s.do_number}` : ""}</p>
                   {s.complaint_reason && <p className="mt-1 text-xs font-medium text-rose-600">Alasan Komplain: {s.complaint_reason}</p>}
                 </div>
               );

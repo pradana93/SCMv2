@@ -57,17 +57,17 @@ export default function AppLayout() {
 
   return <div className="min-h-screen bg-background text-foreground pb-24 sm:pb-28">
     <header className="sticky top-0 z-20 border-b border-border bg-card backdrop-blur" style={{ paddingTop: "env(safe-area-inset-top)" }}>
-      <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:px-6 opacity-100">
-        <span className="rounded-xl bg-indigo-600 p-2 text-white"><Truck className="h-5 w-5" /></span>
-        <div><p className="font-bold leading-tight text-2xl">Bangor SCM</p><p className="text-xs text-slate-500">Dashboard Monitoring</p></div>
-        <div className="ml-auto flex items-center gap-3">
+      <div className="mx-auto flex max-w-6xl items-center gap-2 px-3 py-3 sm:gap-3 sm:px-6 opacity-100">
+        <span className="shrink-0 rounded-xl bg-indigo-600 p-2 text-white"><Truck className="h-5 w-5" /></span>
+        <div className="min-w-0"><p className="truncate font-bold leading-tight text-xl sm:text-2xl">Bangor SCM</p><p className="truncate text-xs text-slate-500">Dashboard Monitoring</p></div>
+        <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
           {user ?
           <button onClick={() => setProfileOpen(true)} className="flex items-center gap-2 rounded-xl px-2 py-1 text-left transition hover:bg-slate-100" title="Ubah profil">
               <span className="relative shrink-0">
                 <UserCircle className="h-7 w-7 text-slate-400" />
                 {myPresence && <span className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full ring-2 ring-white ${myPresence.dot}`} title={myPresence.label} />}
               </span>
-              <span className="min-w-0">
+              <span className="hidden min-w-0 sm:block">
                 <p className="truncate font-semibold text-slate-700 max-w-[160px] text-sm">{user.display_name || user.full_name || user.email}</p>
                 <p className="text-[11px] text-slate-400">{statusLabel}</p>
                 {myPresence && <p className={`text-[11px] font-medium ${myPresence.text}`}>{myPresence.label}</p>}
