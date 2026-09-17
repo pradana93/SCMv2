@@ -1,0 +1,199 @@
+{
+  "name": "ProductionProcess",
+  "type": "object",
+  "properties": {
+    "plan_id": {
+      "type": "string"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "plan_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "item_name": {
+      "type": "string"
+    },
+    "unit": {
+      "type": "string"
+    },
+    "warehouse": {
+      "type": "string"
+    },
+    "round_quantity": {
+      "type": "number",
+      "minimum": 0
+    },
+    "crew_count": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    },
+    "note": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "dalam_proses",
+        "menunggu_verifikasi",
+        "dalam_pembekuan",
+        "selesai"
+      ],
+      "default": "dalam_proses"
+    },
+    "timestamp_start": {
+      "type": "string"
+    },
+    "timestamp_end": {
+      "type": "string"
+    },
+    "actual_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "actual_quantity": {
+      "type": "number",
+      "minimum": 0
+    },
+    "reject_quantity": {
+      "type": "number",
+      "minimum": 0
+    },
+    "reject_unit": {
+      "type": "string"
+    },
+    "actual_note": {
+      "type": "string"
+    },
+    "pic_name": {
+      "type": "string"
+    },
+    "freezing_start_ts": {
+      "type": "string"
+    },
+    "freezing_end_ts": {
+      "type": "string"
+    },
+    "freezing_duration": {
+      "type": "number",
+      "minimum": 0
+    },
+    "freezing_actual_quantity": {
+      "type": "number",
+      "minimum": 0
+    },
+    "status_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "by": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "plan_id",
+    "item_name",
+    "round_quantity",
+    "status"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "supervisor"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "leader"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "staff"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "crew"
+          }
+        }
+      ]
+    },
+    "read": null,
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "supervisor"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "leader"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "staff"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "crew"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    }
+  }
+}

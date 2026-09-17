@@ -1,0 +1,49 @@
+{
+  "properties": {
+    "role": {
+      "type": "string",
+      "description": "The role of the user in the app",
+      "enum": [
+        "super_admin",
+        "admin",
+        "supervisor",
+        "leader",
+        "staff",
+        "crew",
+        "driver"
+      ],
+      "default": "crew"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Custom editable display name shown across the app"
+    },
+    "job_title": {
+      "type": "string",
+      "description": "Fungsi kerja / jabatan pengguna"
+    },
+    "last_active_at": {
+      "type": "string",
+      "description": "Timestamp aktivitas terakhir pengguna untuk menentukan status kehadiran (Online/Away/Offline)"
+    },
+    "warehouses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Gudang penempatan pengguna. Kosong atau berisi 'Semua Gudang' = akses semua gudang."
+    },
+    "read_announcement_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "ID pengumuman yang sudah dibaca oleh pengguna"
+    }
+  },
+  "required": [
+    "role"
+  ],
+  "name": "User",
+  "type": "object"
+}

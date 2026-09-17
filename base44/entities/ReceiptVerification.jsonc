@@ -1,0 +1,174 @@
+{
+  "name": "ReceiptVerification",
+  "type": "object",
+  "properties": {
+    "process_id": {
+      "type": "string"
+    },
+    "receipt_id": {
+      "type": "string"
+    },
+    "verified_by": {
+      "type": "string"
+    },
+    "verified_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "match_status": {
+      "type": "string",
+      "enum": [
+        "sesuai",
+        "tidak_sesuai"
+      ]
+    },
+    "surat_jalan_url": {
+      "type": "string"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "tonnage": {
+            "type": "number",
+            "minimum": 0
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "complete_note": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "menunggu_verifikasi",
+        "diterima",
+        "ditutup"
+      ],
+      "default": "menunggu_verifikasi"
+    },
+    "status_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "by": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "process_id",
+    "status"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "supervisor"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "leader"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "staff"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "crew"
+          }
+        }
+      ]
+    },
+    "read": null,
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "supervisor"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "leader"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "staff"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "crew"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "name": "AccurateSetting",
+  "type": "object",
+  "properties": {
+    "label": {
+      "type": "string",
+      "default": "default"
+    },
+    "access_token": {
+      "type": "string"
+    },
+    "refresh_token": {
+      "type": "string"
+    },
+    "token_type": {
+      "type": "string",
+      "default": "bearer"
+    },
+    "expires_in": {
+      "type": "number"
+    },
+    "token_acquired_at": {
+      "type": "string"
+    },
+    "db_id": {
+      "type": "number"
+    },
+    "db_alias": {
+      "type": "string"
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "host": {
+      "type": "string"
+    },
+    "session_opened_at": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "disconnected",
+        "authorized",
+        "db_opened",
+        "error"
+      ],
+      "default": "disconnected"
+    },
+    "last_error": {
+      "type": "string"
+    },
+    "last_sync_at": {
+      "type": "string"
+    },
+    "auto_sync": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "label"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    }
+  }
+}

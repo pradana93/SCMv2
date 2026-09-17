@@ -1,0 +1,509 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+    --font-heading: ui-sans-serif, system-ui, sans-serif;
+    --font-body: ui-sans-serif, system-ui, sans-serif;
+    --font-display: ui-sans-serif, system-ui, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar-background: 222.2 84% 4.9%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 210 40% 98%;
+    --sidebar-primary-foreground: 222.2 47.4% 11.2%;
+    --sidebar-accent: 217.2 32.6% 17.5%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217.2 32.6% 17.5%;
+    --sidebar-ring: 212.7 26.8% 83.9%;
+  }
+
+}
+
+
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  .no-select { -webkit-user-select: none; user-select: none; }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html, body {
+    overscroll-behavior-y: none;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+
+  button, a, input, select {
+    @apply transition-colors;
+  }
+
+  button, a, [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button:not(:disabled), nav a, nav button {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .no-select, header, nav, [role="button"], .card-header, .list-tile, [data-no-select] {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  @media (pointer: coarse) {
+    nav a, nav button {
+      min-height: 44px;
+    }
+  }
+}
+
+/* Mobile touch target optimization for Android/iOS store guidelines - 44px minimum */
+@media (max-width: 768px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  select:not([multiple]),
+  textarea,
+  [role="combobox"] {
+    min-height: 44px;
+  }
+  [role="dialog"] .flex.flex-col-reverse button,
+  [role="dialog"] .sm\:flex-row.sm\:justify-end button {
+    min-height: 44px;
+  }
+}
+
+/* Dark mode overrides for hardcoded Tailwind classes */
+.dark .bg-white { background-color: hsl(222.2 84% 4.9%); }
+.dark .bg-slate-50 { background-color: hsl(217.2 32.6% 17.5%); }
+.dark .bg-slate-100 { background-color: hsl(217.2 32.6% 20%); }
+.dark .bg-slate-200 { background-color: hsl(217.2 32.6% 25%); }
+
+.dark .text-slate-900 { color: hsl(210 40% 98%); }
+.dark .text-slate-800 { color: hsl(210 40% 96%); }
+.dark .text-slate-700 { color: hsl(210 40% 90%); }
+.dark .text-slate-600 { color: hsl(215 20.2% 75%); }
+.dark .text-slate-500 { color: hsl(215 20.2% 65.1%); }
+.dark .text-slate-400 { color: hsl(215 20.2% 65%); }
+.dark .text-slate-300 { color: hsl(215 20.2% 58%); }
+
+.dark .border-slate-200 { border-color: hsl(217.2 32.6% 25%); }
+.dark .border-slate-100 { border-color: hsl(217.2 32.6% 20%); }
+.dark .border-slate-300 { border-color: hsl(217.2 32.6% 30%); }
+.dark .border-slate-400 { border-color: hsl(217.2 32.6% 35%); }
+
+.dark .divide-slate-100 > * + * { border-color: hsl(217.2 32.6% 20%); }
+.dark .divide-slate-200 > * + * { border-color: hsl(217.2 32.6% 25%); }
+
+.dark .bg-indigo-50 { background-color: rgba(99, 102, 241, 0.15); }
+.dark .bg-emerald-50 { background-color: rgba(16, 185, 129, 0.15); }
+.dark .bg-rose-50 { background-color: rgba(244, 63, 94, 0.15); }
+.dark .bg-amber-50 { background-color: rgba(245, 158, 11, 0.15); }
+.dark .bg-blue-50 { background-color: rgba(59, 130, 246, 0.15); }
+.dark .bg-violet-50 { background-color: rgba(139, 92, 246, 0.15); }
+.dark .bg-cyan-50 { background-color: rgba(6, 182, 212, 0.15); }
+
+.dark .text-indigo-600 { color: hsl(235 85% 75%); }
+.dark .text-emerald-600 { color: hsl(160 84% 65%); }
+.dark .text-rose-600 { color: hsl(350 84% 70%); }
+.dark .text-amber-600 { color: hsl(38 92% 65%); }
+.dark .text-blue-600 { color: hsl(217 91% 70%); }
+.dark .text-violet-600 { color: hsl(258 90% 75%); }
+.dark .text-cyan-600 { color: hsl(190 90% 60%); }
+.dark .text-indigo-500 { color: hsl(235 85% 70%); }
+.dark .text-emerald-500 { color: hsl(160 84% 60%); }
+.dark .text-rose-500 { color: hsl(350 84% 65%); }
+.dark .text-amber-500 { color: hsl(38 92% 60%); }
+.dark .text-blue-500 { color: hsl(217 91% 65%); }
+.dark .text-violet-500 { color: hsl(258 90% 70%); }
+.dark .text-cyan-500 { color: hsl(190 90% 55%); }
+
+.dark .border-indigo-200 { border-color: rgba(99, 102, 241, 0.3); }
+.dark .border-emerald-200 { border-color: rgba(16, 185, 129, 0.3); }
+.dark .border-rose-200 { border-color: rgba(244, 63, 94, 0.3); }
+.dark .border-amber-200 { border-color: rgba(245, 158, 11, 0.3); }
+.dark .border-blue-200 { border-color: rgba(59, 130, 246, 0.3); }
+.dark .border-violet-200 { border-color: rgba(139, 92, 246, 0.3); }
+.dark .border-cyan-200 { border-color: rgba(6, 182, 212, 0.3); }
+
+.dark .hover\:bg-slate-50:hover { background-color: hsl(217.2 32.6% 17.5%); }
+.dark .hover\:bg-slate-100:hover { background-color: hsl(217.2 32.6% 20%); }
+.dark .hover\:bg-indigo-50:hover { background-color: rgba(99, 102, 241, 0.2); }
+.dark .hover\:bg-emerald-50:hover { background-color: rgba(16, 185, 129, 0.2); }
+.dark .hover\:bg-rose-50:hover { background-color: rgba(244, 63, 94, 0.2); }
+.dark .hover\:bg-amber-50:hover { background-color: rgba(245, 158, 11, 0.2); }
+.dark .hover\:bg-red-50:hover { background-color: rgba(244, 63, 94, 0.2); }
+.dark .hover\:bg-violet-50:hover { background-color: rgba(139, 92, 246, 0.2); }
+
+.dark .ring-indigo-100 { --tw-ring-color: rgba(99, 102, 241, 0.2); }
+
+/* Gray color overrides for dark mode */
+.dark .text-gray-900 { color: hsl(210 40% 98%); }
+.dark .text-gray-800 { color: hsl(210 40% 96%); }
+.dark .text-gray-700 { color: hsl(210 40% 90%); }
+.dark .text-gray-600 { color: hsl(215 20.2% 75%); }
+.dark .text-gray-500 { color: hsl(215 20.2% 65%); }
+.dark .text-gray-400 { color: hsl(215 20.2% 65%); }
+.dark .text-gray-300 { color: hsl(215 20.2% 58%); }
+
+.dark .bg-gray-50 { background-color: hsl(217.2 32.6% 17.5%); }
+.dark .bg-gray-100 { background-color: hsl(217.2 32.6% 20%); }
+.dark .bg-gray-200 { background-color: hsl(217.2 32.6% 25%); }
+
+.dark .border-gray-200 { border-color: hsl(217.2 32.6% 25%); }
+.dark .border-gray-300 { border-color: hsl(217.2 32.6% 30%); }
+.dark .border-gray-400 { border-color: hsl(217.2 32.6% 35%); }
+
+.dark .divide-gray-100 > * + * { border-color: hsl(217.2 32.6% 20%); }
+.dark .divide-gray-200 > * + * { border-color: hsl(217.2 32.6% 25%); }
+
+.dark .hover\:bg-gray-50:hover { background-color: hsl(217.2 32.6% 17.5%); }
+.dark .hover\:bg-gray-100:hover { background-color: hsl(217.2 32.6% 20%); }
+
+/* Black text override for dark mode */
+.dark .text-black { color: hsl(210 40% 98%); }
+
+/* Additional slate backgrounds */
+.dark .bg-slate-300 { background-color: hsl(217.2 32.6% 30%); }
+.dark .bg-slate-400 { background-color: hsl(217.2 32.6% 35%); }
+.dark .hover\:bg-slate-200:hover { background-color: hsl(217.2 32.6% 25%); }
+.dark .hover\:bg-slate-300:hover { background-color: hsl(217.2 32.6% 30%); }
+
+/* Table-specific dark mode */
+.dark table thead { background-color: hsl(217.2 32.6% 17.5%); }
+.dark table tbody tr:hover { background-color: hsl(217.2 32.6% 20%) !important; }
+
+/* Input placeholder in dark mode */
+.dark input::placeholder { color: hsl(215 20.2% 50%); }
+.dark textarea::placeholder { color: hsl(215 20.2% 50%); }
+
+/* Keep print preview white in dark mode */
+.dark .print-area { background-color: #ffffff !important; color: #1e293b !important; }
+.dark .print-area .text-slate-800 { color: #1e293b !important; }
+.dark .print-area .text-slate-600 { color: #475569 !important; }
+.dark .print-area .text-slate-400 { color: #94a3b8 !important; }
+.dark .print-area .border-slate-300 { border-color: #cbd5e1 !important; }
+.dark .print-area .border-slate-400 { border-color: #94a3b8 !important; }
+.dark .print-area .border-slate-100 { border-color: #f1f5f9 !important; }
+.dark .print-area .bg-slate-50 { background-color: #f8fafc !important; }
+
+/* ── Additional dark mode overrides for full coverage ── */
+
+/* White with opacity (headers, navs, overlays) */
+.dark .bg-white\/95 { background-color: hsla(222.2, 84%, 4.9%, 0.95); }
+.dark .bg-white\/90 { background-color: hsla(222.2, 84%, 4.9%, 0.9); }
+.dark .bg-white\/80 { background-color: hsla(222.2, 84%, 4.9%, 0.8); }
+.dark .bg-white\/70 { background-color: hsla(222.2, 84%, 4.9%, 0.7); }
+.dark .bg-white\/50 { background-color: hsla(222.2, 84%, 4.9%, 0.5); }
+
+/* Slate-900 dark buttons — lighten in dark mode */
+.dark .bg-slate-900 { background-color: hsl(217.2 32.6% 20%); }
+.dark .hover\:bg-slate-800:hover { background-color: hsl(217.2 32.6% 25%); }
+.dark .hover\:bg-slate-700:hover { background-color: hsl(217.2 32.6% 30%); }
+
+/* Color -700 text variants (buttons, labels) */
+.dark .text-indigo-700 { color: hsl(235 85% 75%); }
+.dark .text-emerald-700 { color: hsl(160 84% 70%); }
+.dark .text-rose-700 { color: hsl(350 84% 75%); }
+.dark .text-amber-700 { color: hsl(38 92% 70%); }
+.dark .text-blue-700 { color: hsl(217 91% 75%); }
+.dark .text-violet-700 { color: hsl(258 90% 80%); }
+.dark .text-cyan-700 { color: hsl(190 90% 65%); }
+.dark .text-green-700 { color: hsl(142 72% 70%); }
+.dark .text-purple-700 { color: hsl(262 83% 80%); }
+.dark .text-orange-700 { color: hsl(25 95% 70%); }
+
+/* Color -800 text variants */
+.dark .text-indigo-800 { color: hsl(235 85% 80%); }
+.dark .text-emerald-800 { color: hsl(160 84% 75%); }
+.dark .text-rose-800 { color: hsl(350 84% 80%); }
+.dark .text-amber-800 { color: hsl(38 92% 75%); }
+.dark .text-blue-800 { color: hsl(217 91% 80%); }
+
+/* Red error text */
+.dark .text-red-600 { color: hsl(0 84% 70%); }
+.dark .text-red-500 { color: hsl(0 84% 65%); }
+.dark .text-red-700 { color: hsl(0 84% 75%); }
+.dark .text-red-800 { color: hsl(0 84% 80%); }
+.dark .bg-red-50 { background-color: rgba(239, 68, 68, 0.15); }
+.dark .bg-red-100 { background-color: rgba(239, 68, 68, 0.2); }
+.dark .border-red-200 { border-color: rgba(239, 68, 68, 0.3); }
+.dark .border-red-300 { border-color: rgba(239, 68, 68, 0.4); }
+
+/* Green */
+.dark .bg-green-50 { background-color: rgba(34, 197, 94, 0.15); }
+.dark .bg-green-100 { background-color: rgba(34, 197, 94, 0.2); }
+.dark .text-green-600 { color: hsl(142 72% 65%); }
+.dark .border-green-200 { border-color: rgba(34, 197, 94, 0.3); }
+.dark .border-green-300 { border-color: rgba(34, 197, 94, 0.4); }
+
+/* Purple */
+.dark .bg-purple-50 { background-color: rgba(168, 85, 247, 0.15); }
+.dark .bg-purple-100 { background-color: rgba(168, 85, 247, 0.2); }
+.dark .text-purple-600 { color: hsl(262 83% 75%); }
+.dark .border-purple-200 { border-color: rgba(168, 85, 247, 0.3); }
+
+/* Orange */
+.dark .bg-orange-50 { background-color: rgba(249, 115, 22, 0.15); }
+.dark .bg-orange-100 { background-color: rgba(249, 115, 22, 0.2); }
+.dark .text-orange-600 { color: hsl(25 95% 65%); }
+.dark .border-orange-200 { border-color: rgba(249, 115, 22, 0.3); }
+
+/* Indigo with opacity */
+.dark .bg-indigo-50\/50 { background-color: rgba(99, 102, 241, 0.1); }
+.dark .bg-indigo-50\/40 { background-color: rgba(99, 102, 241, 0.08); }
+.dark .bg-indigo-50\/30 { background-color: rgba(99, 102, 241, 0.06); }
+.dark .border-indigo-100 { border-color: rgba(99, 102, 241, 0.2); }
+
+/* Indigo 600 hover */
+.dark .hover\:bg-indigo-700:hover { background-color: hsl(235 85% 60%); }
+.dark .hover\:text-indigo-600:hover { color: hsl(235 85% 70%); }
+.dark .hover\:text-indigo-700:hover { color: hsl(235 85% 75%); }
+.dark .hover\:text-red-700:hover { color: hsl(0 84% 75%); }
+.dark .hover\:text-rose-600:hover { color: hsl(350 84% 70%); }
+.dark .hover\:text-emerald-600:hover { color: hsl(160 84% 65%); }
+.dark .hover\:text-blue-600:hover { color: hsl(217 91% 70%); }
+.dark .hover\:bg-red-700:hover { background-color: hsl(0 72% 40%); }
+.dark .hover\:text-slate-900:hover { color: hsl(210 40% 98%); }
+.dark .hover\:text-slate-700:hover { color: hsl(210 40% 90%); }
+.dark .hover\:text-slate-600:hover { color: hsl(215 20.2% 75%); }
+
+/* Form elements — ensure readable text in dark mode */
+.dark input, .dark select, .dark textarea { color: hsl(210 40% 98%); }
+
+/* Fix: native calendar picker icon invisible in dark mode */
+.dark input[type="date"]::-webkit-calendar-picker-indicator,
+.dark input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+.dark input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.8;
+}
+.dark select option { background-color: hsl(222.2 84% 4.9%); color: hsl(210 40% 98%); }
+.dark input::placeholder, .dark textarea::placeholder { color: hsl(215 20.2% 50%); }
+
+/* Shadow adjustments */
+.dark .shadow-slate-900\/5 { --tw-shadow-color: rgba(0, 0, 0, 0.3); }
+.dark .shadow-slate-900\/10 { --tw-shadow-color: rgba(0, 0, 0, 0.4); }
+
+/* Ring colors */
+.dark .ring-slate-300 { --tw-ring-color: hsl(217.2 32.6% 30%); }
+.dark .ring-slate-400 { --tw-ring-color: hsl(217.2 32.6% 35%); }
+.dark .ring-white { --tw-ring-color: hsl(210 40% 98%); }
+
+/* Black with opacity (overlays) */
+.dark .bg-black\/80 { background-color: rgba(0, 0, 0, 0.8); }
+.dark .bg-black\/50 { background-color: rgba(0, 0, 0, 0.5); }
+.dark .bg-black\/20 { background-color: rgba(0, 0, 0, 0.3); }
+
+/* Zinc colors */
+.dark .bg-zinc-50 { background-color: hsl(217.2 32.6% 17.5%); }
+.dark .bg-zinc-100 { background-color: hsl(217.2 32.6% 20%); }
+.dark .text-zinc-600 { color: hsl(215 20.2% 75%); }
+.dark .text-zinc-700 { color: hsl(215 20.2% 80%); }
+.dark .text-zinc-800 { color: hsl(215 20.2% 85%); }
+.dark .text-zinc-900 { color: hsl(210 40% 98%); }
+.dark .border-zinc-200 { border-color: hsl(217.2 32.6% 25%); }
+.dark .border-zinc-300 { border-color: hsl(217.2 32.6% 30%); }
+
+/* Neutral colors */
+.dark .bg-neutral-50 { background-color: hsl(217.2 32.6% 17.5%); }
+.dark .bg-neutral-100 { background-color: hsl(217.2 32.6% 20%); }
+.dark .text-neutral-600 { color: hsl(215 20.2% 75%); }
+.dark .text-neutral-700 { color: hsl(215 20.2% 80%); }
+.dark .text-neutral-900 { color: hsl(210 40% 98%); }
+.dark .border-neutral-200 { border-color: hsl(217.2 32.6% 25%); }
+
+/* ── Opacity-modified backgrounds (bg-color/N) — not matched by base overrides ── */
+.dark .bg-violet-50\/40 { background-color: rgba(139, 92, 246, 0.08); }
+.dark .bg-violet-50\/50 { background-color: rgba(139, 92, 246, 0.1); }
+.dark .bg-violet-50\/30 { background-color: rgba(139, 92, 246, 0.06); }
+.dark .bg-emerald-50\/50 { background-color: rgba(16, 185, 129, 0.1); }
+.dark .bg-emerald-50\/40 { background-color: rgba(16, 185, 129, 0.08); }
+.dark .bg-emerald-50\/30 { background-color: rgba(16, 185, 129, 0.06); }
+.dark .bg-blue-50\/50 { background-color: rgba(59, 130, 246, 0.1); }
+.dark .bg-blue-50\/40 { background-color: rgba(59, 130, 246, 0.08); }
+.dark .bg-amber-50\/50 { background-color: rgba(245, 158, 11, 0.1); }
+.dark .bg-amber-50\/30 { background-color: rgba(245, 158, 11, 0.06); }
+.dark .bg-rose-50\/50 { background-color: rgba(244, 63, 94, 0.1); }
+.dark .bg-rose-50\/30 { background-color: rgba(244, 63, 94, 0.06); }
+.dark .bg-teal-50\/40 { background-color: rgba(20, 184, 166, 0.08); }
+.dark .bg-slate-50\/50 { background-color: hsl(217.2 32.6% 17.5%); }
+.dark .bg-slate-50\/60 { background-color: hsl(217.2 32.6% 17.5%); }
+.dark .bg-slate-50\/40 { background-color: hsl(217.2 32.6% 17.5%); }
+.dark .bg-white\/70 { background-color: hsla(222.2, 84%, 4.9%, 0.7); }
+.dark .bg-white\/60 { background-color: hsla(222.2, 84%, 4.9%, 0.6); }
+.dark .bg-indigo-50\/50 { background-color: rgba(99, 102, 241, 0.1); }
+.dark .bg-indigo-50\/40 { background-color: rgba(99, 102, 241, 0.08); }
+.dark .bg-indigo-50\/30 { background-color: rgba(99, 102, 241, 0.06); }
+
+/* Hover states for -100 opacity variants */
+.dark .hover\:bg-violet-100\/60:hover { background-color: rgba(139, 92, 246, 0.15); }
+.dark .hover\:bg-emerald-100\/60:hover { background-color: rgba(16, 185, 129, 0.15); }
+.dark .hover\:bg-blue-100\/60:hover { background-color: rgba(59, 130, 246, 0.15); }
+.dark .hover\:bg-amber-100\/60:hover { background-color: rgba(245, 158, 11, 0.15); }
+.dark .hover\:bg-rose-100\/60:hover { background-color: rgba(244, 63, 94, 0.15); }
+
+/* Hover states for solid -100 variants */
+.dark .hover\:bg-emerald-100:hover { background-color: rgba(16, 185, 129, 0.2); }
+.dark .hover\:bg-indigo-100:hover { background-color: rgba(99, 102, 241, 0.2); }
+.dark .hover\:bg-violet-100:hover { background-color: rgba(139, 92, 246, 0.2); }
+.dark .hover\:bg-rose-100:hover { background-color: rgba(244, 63, 94, 0.2); }
+.dark .hover\:bg-amber-100:hover { background-color: rgba(245, 158, 11, 0.2); }
+.dark .hover\:bg-blue-100:hover { background-color: rgba(59, 130, 246, 0.2); }
+.dark .hover\:bg-cyan-100:hover { background-color: rgba(6, 182, 212, 0.2); }
+.dark .hover\:bg-slate-100:hover { background-color: hsl(217.2 32.6% 20%); }
+
+/* Text -400 variants (card sublabels) */
+.dark .text-violet-400 { color: hsl(258 90% 75%); }
+.dark .text-emerald-400 { color: hsl(160 84% 65%); }
+.dark .text-blue-400 { color: hsl(217 91% 70%); }
+.dark .text-amber-400 { color: hsl(38 92% 65%); }
+.dark .text-rose-400 { color: hsl(350 84% 70%); }
+.dark .text-cyan-400 { color: hsl(190 90% 60%); }
+.dark .text-teal-400 { color: hsl(180 65% 60%); }
+.dark .text-teal-500 { color: hsl(180 65% 55%); }
+.dark .text-teal-600 { color: hsl(180 65% 50%); }
+.dark .text-indigo-300 { color: hsl(235 85% 75%); }
+.dark .text-indigo-400 { color: hsl(235 85% 70%); }
+.dark .text-slate-300 { color: hsl(215 20.2% 65%); }
+
+/* Teal backgrounds and borders */
+.dark .bg-teal-50 { background-color: rgba(20, 184, 166, 0.15); }
+.dark .bg-teal-100 { background-color: rgba(20, 184, 166, 0.2); }
+.dark .text-teal-700 { color: hsl(180 65% 65%); }
+.dark .border-teal-200 { border-color: rgba(20, 184, 166, 0.3); }
+.dark .border-teal-100 { border-color: rgba(20, 184, 166, 0.2); }
+
+/* Border -100 variants */
+.dark .border-violet-100 { border-color: rgba(139, 92, 246, 0.2); }
+.dark .border-emerald-100 { border-color: rgba(16, 185, 129, 0.2); }
+.dark .border-blue-100 { border-color: rgba(59, 130, 246, 0.2); }
+.dark .border-amber-100 { border-color: rgba(245, 158, 11, 0.2); }
+.dark .border-rose-100 { border-color: rgba(244, 63, 94, 0.2); }
+
+/* Print-area: keep everything light for printing */
+.dark .print-area .bg-white { background-color: #ffffff !important; }
+.dark .print-area input { color: #1e293b !important; background-color: #ffffff !important; }
+.dark .print-area select { color: #1e293b !important; background-color: #ffffff !important; }
+.dark .print-area input::placeholder { color: #94a3b8 !important; }
+.dark .print-area .text-slate-700 { color: #334155 !important; }
+.dark .print-area .text-slate-600 { color: #475569 !important; }
+.dark .print-area .text-slate-500 { color: #64748b !important; }
+.dark .print-area .border-slate-200 { border-color: #cbd5e1 !important; }
+.dark .print-area .border-slate-100 { border-color: #f1f5f9 !important; }
+.dark .print-area .focus\:bg-amber-50:focus { background-color: #fef3c7 !important; }
+.dark .print-area .focus\:border-indigo-500:focus { border-color: #6366f1 !important; }
+.dark .print-area .focus\:ring-indigo-100:focus { --tw-ring-color: rgba(99, 102, 241, 0.2) !important; }
+
+/* Slate-50 background with explicit dark override for nested elements */
+.dark .bg-slate-50\/50 .text-slate-400 { color: hsl(215 20.2% 65%); }
+.dark .bg-slate-50\/60 .text-slate-400 { color: hsl(215 20.2% 65%); }
+
+/* Ring colors for dark mode */
+.dark .ring-slate-100 { --tw-ring-color: hsl(217.2 32.6% 20%); }
+.dark .ring-slate-200 { --tw-ring-color: hsl(217.2 32.6% 25%); }
+.dark .ring-indigo-100 { --tw-ring-color: rgba(99, 102, 241, 0.2); }
+
+/* Additional print-area text overrides */
+.dark .print-area .text-slate-300 { color: #cbd5e1 !important; }
+.dark .print-area .text-slate-900 { color: #0f172a !important; }
+.dark .print-area .text-indigo-600 { color: #4f46e5 !important; }
+.dark .print-area .text-indigo-500 { color: #6366f1 !important; }
+.dark .print-area .text-red-600 { color: #dc2626 !important; }
+.dark .print-area .text-emerald-600 { color: #059669 !important; }
+.dark .print-area .bg-amber-50 { background-color: #fef3c7 !important; }
+.dark .print-area .bg-indigo-50 { background-color: #e0e7ff !important; }
+
+/* Focus ring inside print-area */
+.dark .print-area .focus\:ring-2:focus { --tw-ring-color: rgba(99, 102, 241, 0.2) !important; }
+
+/* Slate-900 text for dark mode */
+.dark .text-slate-900 { color: hsl(210 40% 98%); }
+
+/* Slate-50 border */
+.dark .border-slate-50 { border-color: hsl(217.2 32.6% 20%); }
+
+/* Slate-50/40 background */
+.dark .bg-slate-50\/40 { background-color: hsl(217.2 32.6% 17.5%); }
+
+/* Indigo 950 for selected row backgrounds */
+.dark .bg-indigo-950\/20 { background-color: rgba(67, 56, 202, 0.15); }
+.dark .bg-indigo-50\/40 { background-color: rgba(99, 102, 241, 0.08); }
+
+/* Red 950 for hover */
+.dark .hover\:bg-red-950\/30:hover { background-color: rgba(127, 29, 29, 0.3); }
+.dark .hover\:bg-red-950\/20:hover { background-color: rgba(127, 29, 29, 0.2); }
+
+/* Slate 700 for dark borders and hovers */
+.dark .border-slate-700 { border-color: hsl(217.2 32.6% 25%); }
+.dark .border-slate-700\/50 { border-color: hsla(217.2, 32.6%, 25%, 0.5); }
+.dark .hover\:bg-slate-700:hover { background-color: hsl(217.2 32.6% 30%); }
+.dark .bg-slate-800\/40 { background-color: hsla(222.2, 84%, 4.9%, 0.4); }
+.dark .bg-slate-800\/60 { background-color: hsla(222.2, 84%, 4.9%, 0.6); }

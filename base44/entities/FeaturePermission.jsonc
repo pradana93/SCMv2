@@ -1,0 +1,125 @@
+{
+  "name": "FeaturePermission",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "group": {
+      "type": "string"
+    },
+    "allowed_roles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "super_admin",
+          "admin",
+          "supervisor",
+          "leader",
+          "staff",
+          "crew",
+          "driver"
+        ]
+      }
+    },
+    "view_roles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "super_admin",
+          "admin",
+          "supervisor",
+          "leader",
+          "staff",
+          "crew",
+          "driver"
+        ]
+      }
+    },
+    "edit_roles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "super_admin",
+          "admin",
+          "supervisor",
+          "leader",
+          "staff",
+          "crew",
+          "driver"
+        ]
+      }
+    },
+    "delete_roles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "super_admin",
+          "admin",
+          "supervisor",
+          "leader",
+          "staff",
+          "crew",
+          "driver"
+        ]
+      }
+    }
+  },
+  "required": [
+    "key",
+    "label",
+    "allowed_roles"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "email": "suhendra.a.d@gmail.com"
+          }
+        }
+      ]
+    },
+    "read": null,
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "email": "suhendra.a.d@gmail.com"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "email": "suhendra.a.d@gmail.com"
+          }
+        }
+      ]
+    }
+  }
+}

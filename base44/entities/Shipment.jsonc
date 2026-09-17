@@ -1,0 +1,447 @@
+{
+  "name": "Shipment",
+  "type": "object",
+  "properties": {
+    "outlet_name": {
+      "type": "string"
+    },
+    "tonnage": {
+      "type": "number",
+      "minimum": 0
+    },
+    "ro_tonnage": {
+      "type": "number",
+      "minimum": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "menunggu_antrian",
+        "proses_picking",
+        "menunggu_packing",
+        "proses_packing",
+        "menunggu_loading",
+        "proses_loading",
+        "sudah_dikirim",
+        "rescheduled",
+        "dalam_proses"
+      ],
+      "default": "menunggu_antrian"
+    },
+    "fleet": {
+      "type": "string"
+    },
+    "delivery_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "warehouse": {
+      "type": "string",
+      "default": "Gudang Jakarta"
+    },
+    "checker_name": {
+      "type": "string"
+    },
+    "crew_count": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    },
+    "timestamp_dalam_proses": {
+      "type": "string"
+    },
+    "timestamp_proses_picking": {
+      "type": "string"
+    },
+    "timestamp_proses_packing": {
+      "type": "string"
+    },
+    "timestamp_proses_loading": {
+      "type": "string"
+    },
+    "timestamp_proses_picking_end": {
+      "type": "string"
+    },
+    "timestamp_proses_packing_end": {
+      "type": "string"
+    },
+    "timestamp_proses_loading_end": {
+      "type": "string"
+    },
+    "timestamp_sudah_dikirim": {
+      "type": "string"
+    },
+    "actual_arrival_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "arrival_timestamp": {
+      "type": "string"
+    },
+    "arrival_confirmed_by": {
+      "type": "string"
+    },
+    "picking_pic": {
+      "type": "string"
+    },
+    "picking_do_count": {
+      "type": "number",
+      "minimum": 0
+    },
+    "picking_notes": {
+      "type": "string"
+    },
+    "picking_crew_count": {
+      "type": "number",
+      "minimum": 0
+    },
+    "ro_received_by": {
+      "type": "string"
+    },
+    "packing_checker_name": {
+      "type": "string"
+    },
+    "packing_crew_count": {
+      "type": "number",
+      "minimum": 0
+    },
+    "packing_total_koli": {
+      "type": "number",
+      "minimum": 0
+    },
+    "packing_tonnage_status": {
+      "type": "string",
+      "enum": [
+        "sesuai",
+        "tidak_sesuai"
+      ]
+    },
+    "loading_pic": {
+      "type": "string"
+    },
+    "loading_crew_count": {
+      "type": "number",
+      "minimum": 0
+    },
+    "loading_koli": {
+      "type": "number",
+      "minimum": 0
+    },
+    "loading_koli_status": {
+      "type": "string",
+      "enum": [
+        "sesuai",
+        "tidak_sesuai"
+      ]
+    },
+    "proof_picking_url": {
+      "type": "string"
+    },
+    "proof_packing_url": {
+      "type": "string"
+    },
+    "license_plate": {
+      "type": "string"
+    },
+    "proof_file_url": {
+      "type": "string"
+    },
+    "accuracy": {
+      "type": "string",
+      "enum": [
+        "tanpa_komplain",
+        "ada_komplain",
+        "data_belum_tersedia"
+      ]
+    },
+    "complaint_reason": {
+      "type": "string"
+    },
+    "complaint_type": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "kurang_kirim",
+          "lebih_kirim",
+          "rusak_waste",
+          "salah_input",
+          "lainnya"
+        ]
+      }
+    },
+    "complaint_category": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "human_error",
+          "barang_waste",
+          "lainnya"
+        ]
+      }
+    },
+    "rescheduled_from_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "reschedule_reason": {
+      "type": "string"
+    },
+    "reschedule_note": {
+      "type": "string"
+    },
+    "do_number": {
+      "type": "string"
+    },
+    "do_barcode": {
+      "type": "string"
+    },
+    "document_type": {
+      "type": "string",
+      "enum": [
+        "delivery_order",
+        "item_transfer"
+      ],
+      "default": "delivery_order"
+    },
+    "do_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "barcode": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "koli": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "packing_list_data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "sheet_name": {
+            "type": "string"
+          },
+          "ship_to": {
+            "type": "string"
+          },
+          "delivery_no": {
+            "type": "string"
+          },
+          "ship_via": {
+            "type": "string"
+          },
+          "delivery_date": {
+            "type": "string"
+          },
+          "columns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "no_koli": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "qty": {
+                  "type": "number"
+                },
+                "satuan_gramasi": {
+                  "type": "string"
+                },
+                "total_gramasi": {
+                  "type": "number"
+                },
+                "item_unit": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "packing_log": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "row_name": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          },
+          "old_value": {
+            "type": "string"
+          },
+          "new_value": {
+            "type": "string"
+          },
+          "changed_by": {
+            "type": "string"
+          },
+          "changed_at": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "status_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "by": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "outlet_name",
+    "tonnage",
+    "status",
+    "fleet",
+    "delivery_date",
+    "warehouse",
+    "checker_name",
+    "crew_count"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "supervisor"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "leader"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "staff"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "crew"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "driver"
+          }
+        }
+      ]
+    },
+    "read": null,
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "supervisor"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "leader"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "staff"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "crew"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "driver"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

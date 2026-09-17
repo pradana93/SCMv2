@@ -1,0 +1,79 @@
+{
+  "name": "AuditLog",
+  "type": "object",
+  "properties": {
+    "user_name": {
+      "type": "string"
+    },
+    "user_email": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string"
+    },
+    "entity_type": {
+      "type": "string"
+    },
+    "entity_id": {
+      "type": "string"
+    },
+    "entity_name": {
+      "type": "string"
+    },
+    "details": {
+      "type": "string"
+    },
+    "module": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "action",
+    "entity_type"
+  ],
+  "rls": {
+    "create": null,
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "email": "suhendra.a.d@gmail.com"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "email": "suhendra.a.d@gmail.com"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "email": "suhendra.a.d@gmail.com"
+          }
+        }
+      ]
+    }
+  }
+}

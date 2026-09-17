@@ -1,0 +1,108 @@
+{
+  "name": "StockItem",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "code": {
+      "type": "string"
+    },
+    "barcode": {
+      "type": "string"
+    },
+    "unit": {
+      "type": "string"
+    },
+    "units": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "conversion": {
+            "type": "number",
+            "minimum": 0,
+            "default": 1
+          },
+          "is_base": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      }
+    },
+    "gramasi": {
+      "type": "number",
+      "minimum": 0,
+      "default": 0
+    },
+    "min_stock": {
+      "type": "number",
+      "minimum": 0,
+      "default": 0
+    },
+    "category": {
+      "type": "string"
+    },
+    "accurate_no": {
+      "type": "string"
+    },
+    "warehouses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "read": null,
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    }
+  }
+}

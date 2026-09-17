@@ -1,0 +1,191 @@
+{
+  "name": "ReceiptProcess",
+  "type": "object",
+  "properties": {
+    "receipt_id": {
+      "type": "string"
+    },
+    "arrival_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "warehouse": {
+      "type": "string"
+    },
+    "sender_name": {
+      "type": "string"
+    },
+    "stock_keeper_name": {
+      "type": "string"
+    },
+    "crew_count": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    },
+    "receive_start_ts": {
+      "type": "string"
+    },
+    "receive_end_ts": {
+      "type": "string"
+    },
+    "receive_duration": {
+      "type": "number",
+      "minimum": 0
+    },
+    "match_status": {
+      "type": "string",
+      "enum": [
+        "sesuai",
+        "tidak_sesuai"
+      ]
+    },
+    "surat_jalan_url": {
+      "type": "string"
+    },
+    "received_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item_name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "tonnage": {
+            "type": "number",
+            "minimum": 0
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "note": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "dalam_proses",
+        "selesai"
+      ],
+      "default": "dalam_proses"
+    },
+    "status_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "by": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "receipt_id",
+    "status"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "supervisor"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "leader"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "staff"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "crew"
+          }
+        }
+      ]
+    },
+    "read": null,
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "supervisor"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "leader"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "staff"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "crew"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    }
+  }
+}

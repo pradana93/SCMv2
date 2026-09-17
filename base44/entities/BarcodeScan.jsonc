@@ -1,0 +1,132 @@
+{
+  "name": "BarcodeScan",
+  "type": "object",
+  "properties": {
+    "barcode": {
+      "type": "string"
+    },
+    "item_name": {
+      "type": "string"
+    },
+    "item_code": {
+      "type": "string"
+    },
+    "scan_type": {
+      "type": "string",
+      "enum": [
+        "masuk",
+        "keluar",
+        "cek_stok"
+      ],
+      "default": "masuk"
+    },
+    "reference_type": {
+      "type": "string"
+    },
+    "reference_id": {
+      "type": "string"
+    },
+    "reference_label": {
+      "type": "string"
+    },
+    "quantity": {
+      "type": "number",
+      "minimum": 0,
+      "default": 1
+    },
+    "unit": {
+      "type": "string"
+    },
+    "warehouse": {
+      "type": "string"
+    },
+    "scanned_by": {
+      "type": "string"
+    },
+    "scanned_at": {
+      "type": "string"
+    },
+    "match_status": {
+      "type": "string",
+      "enum": [
+        "sesuai",
+        "tidak_sesuai",
+        "tidak_ditemukan"
+      ],
+      "default": "sesuai"
+    },
+    "note": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "barcode",
+    "scan_type",
+    "scanned_by"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "supervisor"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "leader"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "staff"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "crew"
+          }
+        }
+      ]
+    },
+    "read": null,
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    }
+  }
+}

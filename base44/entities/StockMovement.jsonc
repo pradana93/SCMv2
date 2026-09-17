@@ -1,0 +1,124 @@
+{
+  "name": "StockMovement",
+  "type": "object",
+  "properties": {
+    "item_name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "masuk",
+        "keluar"
+      ],
+      "default": "masuk"
+    },
+    "quantity": {
+      "type": "number",
+      "minimum": 0
+    },
+    "unit": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    },
+    "reference": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "warehouse": {
+      "type": "string"
+    },
+    "barcode": {
+      "type": "string"
+    },
+    "barcode_scanned": {
+      "type": "boolean",
+      "default": false
+    },
+    "accurate_synced": {
+      "type": "boolean",
+      "default": false
+    },
+    "accurate_sync_date": {
+      "type": "string"
+    },
+    "accurate_ref": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "item_name",
+    "type",
+    "quantity"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "supervisor"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "leader"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "staff"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "crew"
+          }
+        }
+      ]
+    },
+    "read": null,
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    }
+  }
+}

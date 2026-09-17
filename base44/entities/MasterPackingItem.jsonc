@@ -1,0 +1,70 @@
+{
+  "name": "MasterPackingItem",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "code": {
+      "type": "string"
+    },
+    "satuan": {
+      "type": "string"
+    },
+    "konversi_ke_koli": {
+      "type": "number",
+      "minimum": 0,
+      "default": 1
+    },
+    "qty_max": {
+      "type": "number",
+      "minimum": 0,
+      "default": 1
+    },
+    "kategori": {
+      "type": "string"
+    },
+    "keterangan": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "read": null,
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "super_admin"
+      }
+    }
+  }
+}

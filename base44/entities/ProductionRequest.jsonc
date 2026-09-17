@@ -1,0 +1,128 @@
+{
+  "name": "ProductionRequest",
+  "type": "object",
+  "properties": {
+    "request_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "warehouse": {
+      "type": "string",
+      "default": "Gudang Jakarta"
+    },
+    "item_name": {
+      "type": "string"
+    },
+    "unit": {
+      "type": "string"
+    },
+    "requested_quantity": {
+      "type": "number",
+      "minimum": 0
+    },
+    "current_stock": {
+      "type": "number"
+    },
+    "note": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "selesai"
+      ],
+      "default": "open"
+    }
+  },
+  "required": [
+    "request_date",
+    "item_name",
+    "requested_quantity"
+  ],
+  "rls": {
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "supervisor"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "leader"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "staff"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "crew"
+          }
+        }
+      ]
+    },
+    "read": null,
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "supervisor"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "leader"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "staff"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "crew"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "super_admin"
+          }
+        }
+      ]
+    }
+  }
+}
