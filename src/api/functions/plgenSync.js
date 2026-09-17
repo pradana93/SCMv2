@@ -31,10 +31,10 @@ export const isPlgenSyncConfigured = !!(PLGEN_URL && PLGEN_ANON_KEY);
 
 // Company code (DO/<CODE>/...) → default origin warehouse. Adjust to taste.
 export const WAREHOUSE_BY_COMPANY = {
-  BBT: 'Gudang Batu Ceper',
-  BBB: 'Batu Ceper',
+  BBT: 'Gudang Vittoria',
+  BBB: 'Vittoria',
 };
-export const FALLBACK_WAREHOUSE = 'Gudang Batu Ceper';
+export const FALLBACK_WAREHOUSE = 'Gudang Vittoria';
 
 const SYNC_LIMIT = 200;
 
