@@ -1,43 +1,29 @@
-# Base44 Project
+# SCMv2 (independent — Supabase backend)
 
-Use this repository to run and edit the app locally, then publish changes back through Base44.
-
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+Migrated off Base44. Frontend is React + Vite; all backend (database, auth,
+storage) runs on Supabase. App logic is unchanged — the old `base44.*` import
+surface is preserved as a compatibility shim over Supabase
+(`src/api/base44Client.js`).
 
 ## Prerequisites
 
-1. Clone the repository using the project's Git URL.
-2. Navigate to the project directory.
-3. Install dependencies: `npm install`.
-4. Install the Base44 CLI: `npm install -g base44@latest`.
+1. Node.js 18+ and npm.
+2. A Supabase project (URL + anon key).
+3. Supabase CLI (optional, for migrations): `npm i -g supabase`.
 
-See the [Base44 CLI docs](https://docs.base44.com/developers/references/cli/get-started/overview) if you want to run Base44 commands directly.
+## Setup
 
-## Run Locally
+1. Install dependencies: `npm install`.
+2. Copy env template: `cp .env.example .env.local`, then fill in:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+   - (optional) `VITE_ACCURATE_CLIENT_ID` / `VITE_ACCURATE_CLIENT_SECRET` for the Accurate settings page.
+3. Apply the database schema (creates all 23 entity tables + `profiles`, RLS policies, `uploads` storage bucket):
+   - `supabase link --project-ref <your-project-ref>`, then `supabase db push`,
+   - or paste `supabase/migrations/0001_base44_migration.sql` into Dashboard > SQL Editor and run it.
+4. In Supabase Dashboard > Authentication, enable Email provider (and email confirmations if you want OTP verification on register).
 
-Run the full local development environment from the project root:
-
-```bash
-base44 dev
-```
-
-`base44 dev` starts the local Base44 development backend and, when this app is configured for it, also starts the frontend dev server for you. Use the frontend URL printed by the command.
-
-For example, when the Base44 project config includes a `serveCommand`, `base44 dev` can launch the frontend too:
-
-```json5
-{
-  "site": {
-    "serveCommand": "npm run dev"
-  }
-}
-```
-
-In a Base44 project this lives in `base44/config.jsonc`.
-
-## Run Only The Frontend
-
-If you only want to work on the frontend against the hosted Base44 backend, run:
+## Run locally
 
 ```bash
 npm run dev
@@ -45,33 +31,24 @@ npm run dev
 
 Open the local URL printed by Vite.
 
-## Use The Hosted Backend
-
-For frontend-only development, create or update `.env.local` in the project root:
+## Build
 
 ```bash
-VITE_BASE44_APP_ID=your_app_id
-VITE_BASE44_APP_BASE_URL=https://your-app.base44.app
+npm run build
 ```
 
-`VITE_BASE44_APP_ID` identifies the Base44 app.
+## Deploy
 
-`VITE_BASE44_APP_BASE_URL` tells the Base44 Vite plugin where to send local `/api` requests. Point it at your deployed Base44 app URL when you want the local frontend to use the hosted backend.
+Any static host works (Vercel, Netlify, etc.): build command `npm run build`, output `dist`. Set the same `VITE_*` env vars in the host dashboard.
 
-When you use `base44 dev`, the command injects the local Base44 values for you, so `.env.local` is mainly needed for frontend-only workflows.
+## Project map
 
-## Publish Your Changes
-
-After pushing your changes to git, open the Base44 dashboard and publish the app:
-
-```bash
-base44 dashboard open
-```
-
-## Docs & Support
-
-Documentation: [https://docs.base44.com/Integrations/Using-GitHub](https://docs.base44.com/Integrations/Using-GitHub)
-
-Base44 CLI command reference: [https://docs.base44.com/developers/references/cli/commands/introduction](https://docs.base44.com/developers/references/cli/commands/introduction)
-
-Support: [https://app.base44.com/support](https://app.base44.com/support)
+- `src/api/supabaseClient.js` — Supabase client.
+- `src/api/db.js` — Base44-compatible entity layer over Supabase tables.
+- `src/api/authCompat.js` — Base44-compatible auth over Supabase Auth + `profiles`.
+- `src/api/functions/` — local replacements for Base44 backend functions (`manageUsers`, `accurateApi`, `parsePdfReport`).
+- `src/api/storageCompat.js` — file uploads via Supabase Storage (`uploads` bucket).
+- `src/api/base44Client.js` — compatibility export; existing pages import this unchanged.
+- `supabase/migrations/` — SQL schema.
+- `supabase/functions/accurate-proxy/` — optional CORS relay for Accurate API.
+- `base44/` — legacy reference only (schemas + original functions, kept for history).
