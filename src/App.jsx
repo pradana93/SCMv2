@@ -54,6 +54,20 @@ const AnimatedRoutes = ({ children }) => {
   );
 };
 
+const ConfigErrorScreen = ({ message }) => (
+  <div className="min-h-screen flex items-center justify-center bg-slate-950 px-4">
+    <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-xl">
+      <h1 className="text-xl font-bold text-white">Backend belum dikonfigurasi</h1>
+      <p className="mt-2 text-sm text-slate-400">
+        {message || 'Supabase is not configured.'} Set{' '}
+        <code className="rounded bg-slate-800 px-1 text-slate-200">VITE_SUPABASE_URL</code> dan{' '}
+        <code className="rounded bg-slate-800 px-1 text-slate-200">VITE_SUPABASE_ANON_KEY</code>{' '}
+        di Vercel (Project Settings &gt; Environment Variables), lalu redeploy.
+      </p>
+    </div>
+  </div>
+);
+
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
@@ -68,7 +82,9 @@ const AuthenticatedApp = () => {
 
   // Handle authentication errors
   if (authError) {
-    if (authError.type === 'user_not_registered') {
+    if (authError.type === 'config_error') {
+      return <ConfigErrorScreen message={authError.message} />;
+    } else if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
       // Redirect to login automatically

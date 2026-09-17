@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
-import { supabase } from '@/api/supabaseClient';
+import { supabase, isSupabaseConfigured } from '@/api/supabaseClient';
 
 const AuthContext = createContext();
 
@@ -40,6 +40,16 @@ export const AuthProvider = ({ children }) => {
   }, [checkUserAuth]);
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setIsLoadingAuth(false);
+      setIsLoadingPublicSettings(false);
+      setAuthChecked(true);
+      setAuthError({
+        type: 'config_error',
+        message: 'Supabase is not configured',
+      });
+      return;
+    }
     checkAppState();
     const { data } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session && session.user) {
