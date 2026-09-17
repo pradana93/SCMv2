@@ -37,7 +37,7 @@ export default function KeepAliveOutlet() {
         const cached = cache.current.get(path);
         if (!isActive && !cached) return null;
         return (
-          <div key={path} hidden={!isActive} className={!isActive ? "hidden" : ""}>
+          <div key={path} hidden={!isActive} className={isActive ? "animate-tab-enter" : "hidden"}>
             {isActive ? outlet : cached}
           </div>
         );

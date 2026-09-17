@@ -36,6 +36,12 @@ const PageLoader = () => (
   </div>
 );
 
+// Per-route suspense: only the page content suspends while its chunk loads,
+// so the header + bottom nav (AppLayout shell) stay mounted and never blink.
+const S = ({ children }) => (
+  <Suspense fallback={<PageLoader />}>{children}</Suspense>
+);
+
 const getRouteGroup = (pathname) => {
   if (["/login", "/register", "/forgot-password", "/reset-password", "/"].includes(pathname)) return "auth";
   if (pathname === "/super-admin") return "super-admin";
@@ -97,7 +103,6 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <AnimatedRoutes>
-    <Suspense fallback={<PageLoader />}>
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
@@ -106,21 +111,20 @@ const AuthenticatedApp = () => {
       <Route path="/" element={<Login />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route element={<AppLayout />}>
-          <Route path="/dashboard" element={<FeatureRoute featureKey="dashboard"><Dashboard /></FeatureRoute>} />
-          <Route path="/pengiriman" element={<FeatureRoute featureKey="pengiriman"><Shipments /></FeatureRoute>} />
-          <Route path="/admin" element={<FeatureRoute featureKey="master_data"><Admin /></FeatureRoute>} />
-          <Route path="/produksi" element={<FeatureRoute featureKey="production"><Production /></FeatureRoute>} />
-          <Route path="/penerimaan" element={<FeatureRoute featureKey="penerimaan"><Penerimaan /></FeatureRoute>} />
-          <Route path="/report" element={<FeatureRoute featureKey="report"><Report /></FeatureRoute>} />
-          <Route path="/stok" element={<FeatureRoute featureKey="stock"><Stock /></FeatureRoute>} />
-          <Route path="/accurate" element={<FeatureRoute featureKey="master_data"><AccurateSettings /></FeatureRoute>} />
-          <Route path="/super-admin" element={<FeatureRoute featureKey="super_admin"><SuperAdmin /></FeatureRoute>} />
-          <Route path="/koli/:suffix/:koliNo" element={<KoliDetail />} />
+          <Route path="/dashboard" element={<FeatureRoute featureKey="dashboard"><S><Dashboard /></S></FeatureRoute>} />
+          <Route path="/pengiriman" element={<FeatureRoute featureKey="pengiriman"><S><Shipments /></S></FeatureRoute>} />
+          <Route path="/admin" element={<FeatureRoute featureKey="master_data"><S><Admin /></S></FeatureRoute>} />
+          <Route path="/produksi" element={<FeatureRoute featureKey="production"><S><Production /></S></FeatureRoute>} />
+          <Route path="/penerimaan" element={<FeatureRoute featureKey="penerimaan"><S><Penerimaan /></S></FeatureRoute>} />
+          <Route path="/report" element={<FeatureRoute featureKey="report"><S><Report /></S></FeatureRoute>} />
+          <Route path="/stok" element={<FeatureRoute featureKey="stock"><S><Stock /></S></FeatureRoute>} />
+          <Route path="/accurate" element={<FeatureRoute featureKey="master_data"><S><AccurateSettings /></S></FeatureRoute>} />
+          <Route path="/super-admin" element={<FeatureRoute featureKey="super_admin"><S><SuperAdmin /></S></FeatureRoute>} />
+          <Route path="/koli/:suffix/:koliNo" element={<S><KoliDetail /></S>} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
-    </Suspense>
     </AnimatedRoutes>
   );
 };
