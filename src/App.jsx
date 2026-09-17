@@ -17,17 +17,18 @@ import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import AppLayout from '@/components/shipping/AppLayout';
 import FeatureRoute from '@/components/FeatureRoute';
+import { pageLoaders, preloadAllRoutesWhenIdle } from '@/lib/routePreload';
 
-const Dashboard = React.lazy(() => import('@/pages/Dashboard'));
-const Shipments = React.lazy(() => import('@/pages/Shipments'));
-const Admin = React.lazy(() => import('@/pages/Admin'));
-const Report = React.lazy(() => import('@/pages/Report'));
-const SuperAdmin = React.lazy(() => import('@/pages/SuperAdmin'));
-const Stock = React.lazy(() => import('@/pages/Stock'));
-const Production = React.lazy(() => import('@/pages/Production'));
-const Penerimaan = React.lazy(() => import('@/pages/Penerimaan'));
-const AccurateSettings = React.lazy(() => import('@/pages/AccurateSettings'));
-const KoliDetail = React.lazy(() => import('@/pages/KoliDetail'));
+const Dashboard = React.lazy(pageLoaders['/dashboard']);
+const Shipments = React.lazy(pageLoaders['/pengiriman']);
+const Admin = React.lazy(pageLoaders['/admin']);
+const Report = React.lazy(pageLoaders['/report']);
+const SuperAdmin = React.lazy(pageLoaders['/super-admin']);
+const Stock = React.lazy(pageLoaders['/stok']);
+const Production = React.lazy(pageLoaders['/produksi']);
+const Penerimaan = React.lazy(pageLoaders['/penerimaan']);
+const AccurateSettings = React.lazy(pageLoaders['/accurate']);
+const KoliDetail = React.lazy(pageLoaders['/koli']);
 
 const PageLoader = () => (
   <div className="fixed inset-0 flex items-center justify-center">
@@ -126,6 +127,12 @@ const AuthenticatedApp = () => {
 
 
 function App() {
+
+  // Warm all tab chunks when the browser is idle so switching tabs never
+  // suspends into the full-screen loader.
+  React.useEffect(() => {
+    preloadAllRoutesWhenIdle();
+  }, []);
 
   return (
     <AuthProvider>

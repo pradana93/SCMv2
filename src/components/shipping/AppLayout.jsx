@@ -12,6 +12,7 @@ import ProfileDialog from "@/components/ProfileDialog";
 import AnnouncementDialog from "@/components/shipping/AnnouncementDialog";
 import { WarehouseFilterProvider } from "./WarehouseFilterContext";
 import { DashboardDateProvider, ShipmentsDateProvider } from "./DateFilterContext";
+import { preloadRoute } from "@/lib/routePreload";
 
 const ROLE_LABELS = { super_admin: "Super Admin", admin: "Admin", supervisor: "Supervisor", leader: "Leader", staff: "Staff", crew: "Crew", driver: "Driver" };
 
@@ -82,7 +83,7 @@ export default function AppLayout() {
           {user &&
           <button onClick={() => setAnnounceOpen(true)} className="relative inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white p-2 text-slate-600 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600" title="Pengumuman"><Bell className="h-4 w-4" />{unreadCount > 0 && <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">{unreadCount > 9 ? "9+" : unreadCount}</span>}</button>}
           {user && canSuperAdmin &&
-          <Link to="/super-admin" className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600" title="Super Admin"><ShieldCheck className="h-4 w-4" /><span className="hidden sm:inline">Super Admin</span></Link>}
+          <Link to="/super-admin" onMouseEnter={() => preloadRoute('/super-admin')} onFocus={() => preloadRoute('/super-admin')} className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600" title="Super Admin"><ShieldCheck className="h-4 w-4" /><span className="hidden sm:inline">Super Admin</span></Link>}
           {!user && publicMode && <Link to="/login" className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"><LogIn className="h-4 w-4" /><span className="hidden sm:inline">Masuk</span></Link>}
         </div>
       </div>
@@ -91,7 +92,7 @@ export default function AppLayout() {
     <nav className="fixed inset-x-0 bottom-0 z-30 flex justify-center" style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
       <div className="mb-3 flex max-w-[calc(100vw-1.5rem)] gap-1 overflow-x-auto rounded-2xl border border-border bg-card p-1.5 shadow-lg shadow-black/5 backdrop-blur scrollbar-hide sm:mb-5">
         {links.map(({ to, label, icon: Icon, end }) =>
-        <NavLink key={to} to={to} end={end} className={({ isActive }) => `flex shrink-0 flex-col items-center justify-center gap-0.5 rounded-xl px-3 py-1.5 text-[10px] font-semibold transition sm:flex-row sm:gap-1.5 sm:px-3.5 sm:py-2 sm:text-sm ${isActive ? "bg-indigo-600 text-white shadow-sm shadow-indigo-600/30" : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"}`}>
+        <NavLink key={to} to={to} end={end} onMouseEnter={() => preloadRoute(to)} onFocus={() => preloadRoute(to)} className={({ isActive }) => `flex shrink-0 flex-col items-center justify-center gap-0.5 rounded-xl px-3 py-1.5 text-[10px] font-semibold transition sm:flex-row sm:gap-1.5 sm:px-3.5 sm:py-2 sm:text-sm ${isActive ? "bg-indigo-600 text-white shadow-sm shadow-indigo-600/30" : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"}`}>
             <Icon className="h-4 w-4 shrink-0" /><span className="hidden sm:inline">{label}</span>
           </NavLink>
         )}
