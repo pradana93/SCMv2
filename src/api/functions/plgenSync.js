@@ -29,12 +29,10 @@ const PLGEN_ANON_KEY = import.meta.env.VITE_PLGEN_SUPABASE_ANON_KEY;
 
 export const isPlgenSyncConfigured = !!(PLGEN_URL && PLGEN_ANON_KEY);
 
-// Company code (DO/<CODE>/...) → default origin warehouse. Adjust to taste.
-export const WAREHOUSE_BY_COMPANY = {
-  BBT: 'Gudang Vittoria',
-  BBB: 'Vittoria',
-};
-export const FALLBACK_WAREHOUSE = 'Gudang Vittoria';
+// Origin warehouse follows the outlet name: contains "BBT" → Gudang Vittoria,
+// otherwise Vittoria. Adjust to taste.
+export const BBT_WAREHOUSE = 'Gudang Vittoria';
+export const DEFAULT_WAREHOUSE = 'Vittoria';
 
 const SYNC_LIMIT = 200;
 
@@ -83,17 +81,14 @@ function matchFleet(cluster, fleets) {
   return hit ? hit.name : '';
 }
 
-function companyOf(deliveryNo) {
-  const m = String(deliveryNo || '').match(/^DO\/([^/]+)\//i);
-  return m ? m[1].toUpperCase() : '';
-}
-
-function resolveWarehouse(deliveryNo, warehouseNames) {
-  const set = new Set((warehouseNames || []).map((w) => w));
-  const preferred = WAREHOUSE_BY_COMPANY[companyOf(deliveryNo)] || FALLBACK_WAREHOUSE;
+function resolveWarehouse(outletName, warehouseNames) {
+  const names = warehouseNames || [];
+  const set = new Set(names);
+  const preferred = /bbt/i.test(outletName || '') ? BBT_WAREHOUSE : DEFAULT_WAREHOUSE;
   if (set.has(preferred)) return preferred;
-  if (set.has(FALLBACK_WAREHOUSE)) return FALLBACK_WAREHOUSE;
-  return warehouseNames[0] || '';
+  if (set.has(BBT_WAREHOUSE)) return BBT_WAREHOUSE;
+  if (set.has(DEFAULT_WAREHOUSE)) return DEFAULT_WAREHOUSE;
+  return names[0] || '';
 }
 
 // Fetch recent PLGen exports with aggregated items. Oldest-first for creation.
@@ -149,7 +144,7 @@ function buildShipment(pl, masters) {
     status: 'menunggu_antrian',
     fleet: matchFleet(cluster, fleetList),
     delivery_date: deliveryDate,
-    warehouse: resolveWarehouse(pl.delivery_no, warehouseNames),
+    warehouse: resolveWarehouse(pl.outlet, warehouseNames),
     checker_name: checkerName,
     crew_count: 0,
     document_type: 'delivery_order',
