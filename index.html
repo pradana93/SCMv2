@@ -7,15 +7,14 @@
     <link rel="manifest" href="/manifest.json" />
     <title>SCMv2</title>
     <script>
+      // Default to light theme. Dark mode applies ONLY when the user
+      // explicitly picks "Gelap" in the profile dialog (stored theme).
+      // The OS color-scheme is intentionally ignored: the dark variant is
+      // not fully styled and produced a broken-looking UI on dark-mode phones.
       try {
         var theme = localStorage.getItem("theme");
-        var mql = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
-        if (theme === "dark" || (!theme && mql && mql.matches)) document.documentElement.classList.add("dark");
-        if (mql) mql.addEventListener("change", function(e) {
-          if (localStorage.getItem("theme")) return;
-          if (e.matches) document.documentElement.classList.add("dark");
-          else document.documentElement.classList.remove("dark");
-        });
+        if (theme === "dark") document.documentElement.classList.add("dark");
+        else document.documentElement.classList.remove("dark");
       } catch (e) {}
     </script>
   </head>
