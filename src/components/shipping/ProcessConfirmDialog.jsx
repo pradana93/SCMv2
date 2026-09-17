@@ -8,7 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 // Drafts survive a page reload (camera app killing the tab, session expiry,
 // accidental refresh): values + already-uploaded photo URLs are restored.
 const DRAFT_TTL_MS = 7 * 24 * 3600 * 1000;
+const CAPTURE_TTL_MS = 10 * 60 * 1000;
 const draftStorageKey = (draftKey) => `scm_form_draft:${draftKey}`;
+const captureStorageKey = (draftKey, fieldKey) => `scm_capture_attempt:${draftKey}:${fieldKey}`;
 function loadDraft(draftKey) {
   if (!draftKey) return null;
   try {
@@ -47,7 +49,25 @@ export default function ProcessConfirmDialog({ open, onClose, onSubmit, title, d
   const [tonnageStatus, setTonnageStatus] = useState("sesuai");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [captureLost, setCaptureLost] = useState(false);
   const inflight = useRef({});
+
+  const markCaptureStart = (fieldKey) => {
+    if (!draftKey) return;
+    try {
+      localStorage.setItem(captureStorageKey(draftKey, fieldKey), String(Date.now()));
+    } catch {
+      // ignore
+    }
+  };
+  const markCaptureDone = (fieldKey) => {
+    if (!draftKey) return;
+    try {
+      localStorage.removeItem(captureStorageKey(draftKey, fieldKey));
+    } catch {
+      // ignore
+    }
+  };
 
   useEffect(() => {
     if (open) {
@@ -69,6 +89,22 @@ export default function ProcessConfirmDialog({ open, onClose, onSubmit, title, d
         if (url) doneUploads[k] = { status: "done", url };
       }
       setUploads(doneUploads);
+      // A capture marker with no file/selection afterwards means the camera
+      // round-trip killed the page before the photo arrived — tell the user
+      // to pick it again instead of showing a silent empty field.
+      let lost = false;
+      try {
+        if (draftKey) {
+          for (const f of fields) {
+            if (f.type !== "file" || doneUploads[f.key]) continue;
+            const raw = localStorage.getItem(captureStorageKey(draftKey, f.key));
+            if (raw && Date.now() - Number(raw) < CAPTURE_TTL_MS) lost = true;
+          }
+        }
+      } catch {
+        // ignore
+      }
+      setCaptureLost(lost);
       setError("");
     }
   }, [open]);
@@ -110,10 +146,19 @@ export default function ProcessConfirmDialog({ open, onClose, onSubmit, title, d
     return p;
   };
 
-  const handleFileSelect = (key, file) => {
+  const handleFileSelect = (key, file, inputEl) => {
     if (!file) return;
+    markCaptureDone(key);
+    if (inputEl) {
+      try {
+        inputEl.value = "";
+      } catch {
+        // ignore
+      }
+    }
     setFiles((prev) => ({ ...prev, [key]: file }));
     setFileNames((prev) => ({ ...prev, [key]: file.name }));
+    setCaptureLost(false);
     setError("");
     uploadFile(key, file);
   };
@@ -190,6 +235,15 @@ export default function ProcessConfirmDialog({ open, onClose, onSubmit, title, d
       }
       await onSubmit(payload);
       clearDraft(draftKey);
+      try {
+        if (draftKey) {
+          for (const f of fields) {
+            if (f.type === "file") localStorage.removeItem(captureStorageKey(draftKey, f.key));
+          }
+        }
+      } catch {
+        // ignore
+      }
       onClose();
     } catch { setError("Gagal menyimpan. Silakan coba lagi."); }
     finally { setSubmitting(false); }
@@ -206,12 +260,12 @@ export default function ProcessConfirmDialog({ open, onClose, onSubmit, title, d
         <div className="mt-1.5 flex items-center gap-3">
           <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold transition hover:bg-slate-50">
             <Upload className="h-4 w-4" />Pilih File
-            <input type="file" accept="image/*,.pdf" className="hidden" onChange={(e) => handleFileSelect(f.key, e.target.files?.[0] || null)} />
+            <input type="file" accept="image/*,.pdf" className="hidden" onClick={() => markCaptureStart(f.key)} onChange={(e) => handleFileSelect(f.key, e.target.files?.[0] || null, e.target)} />
           </label>
           <span className="text-sm text-slate-500">
             {up.status === "uploading" && <span className="inline-flex items-center gap-1.5"><Loader2 className="h-4 w-4 animate-spin" />Mengunggah...</span>}
             {up.status === "done" && <span className="text-emerald-600">Terunggah{displayName ? `: ${displayName}` : ""}</span>}
-            {up.status === "error" && <span className="text-red-600">Upload gagal{displayName ? `: ${displayName}` : ""}</span>}
+            {up.status === "error" && <span className="text-red-600">Upload gagal{displayName ? `: ${displayName}` : ""}{up.error ? ` — ${up.error}` : ""}</span>}
             {up.status !== "uploading" && up.status !== "done" && up.status !== "error" && (displayName || "Belum ada file")}
           </span>
         </div>
@@ -231,6 +285,7 @@ export default function ProcessConfirmDialog({ open, onClose, onSubmit, title, d
         {description && <DialogDescription>{description}</DialogDescription>}
       </DialogHeader>
       {outletName && <p className="rounded-xl bg-slate-50 px-4 py-2.5 text-sm text-slate-600">Outlet: <span className="font-semibold text-slate-900">{outletName}</span></p>}
+      {captureLost && <p className="rounded-xl bg-amber-50 px-4 py-2.5 text-sm text-amber-700">Foto dari kamera tidak masuk (halaman sempat dimuat ulang saat kamera dibuka). Silakan pilih fotonya lagi.</p>}
       <form onSubmit={submit} className="space-y-4">
         {fields.map((f) => {
           if (f.type === "file") {
