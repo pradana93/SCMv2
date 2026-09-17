@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, Upload, ChevronDown, ChevronUp, Search, ScanLine } from "lucide-react";
+import { Plus, Upload, ChevronDown, ChevronUp, Search, ScanLine, RefreshCw, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import ShipmentList from "@/components/shipping/ShipmentList";
 import DateRangeBar from "@/components/shipping/DateRangeBar";
@@ -24,6 +24,7 @@ import PullToRefresh from "@/components/shipping/PullToRefresh";
 import { ensureOutlet } from "@/components/shipping/ensureOutlet";
 import { generateShipmentBarcodes } from "@/components/shipping/shipmentBarcodeUtils";
 import { usePlgenSync } from "@/components/shipping/usePlgenSync";
+import { isPlgenSyncConfigured } from "@/api/functions/plgenSync";
 
 export default function Shipments() {
   const { dateFrom, setDateFrom, dateTo, setDateTo } = useShipmentsDateFilter();
@@ -47,7 +48,25 @@ export default function Shipments() {
     return unsubscribe;
   }, [queryClient, dateFrom, dateTo, warehouses]);
   const { updateStatus, deliverShipment, deleteShipment, deleteShipments } = useShipmentMutations();
-  usePlgenSync();
+  const { syncNow, syncing } = usePlgenSync();
+  const [syncMsg, setSyncMsg] = useState("");
+  const syncTimer = useRef(null);
+  const flashSyncMsg = (msg) => {
+    setSyncMsg(msg);
+    if (syncTimer.current) clearTimeout(syncTimer.current);
+    syncTimer.current = setTimeout(() => setSyncMsg(""), 6000);
+  };
+  useEffect(() => () => { if (syncTimer.current) clearTimeout(syncTimer.current); }, []);
+  const handlePlgenSync = async () => {
+    flashSyncMsg("Mengambil data PL terbaru dari PLGen...");
+    const res = await syncNow();
+    if (!res) return;
+    if (res.error) flashSyncMsg(res.error);
+    else {
+      const n = (res.created || []).length;
+      flashSyncMsg(n > 0 ? `${n} pengiriman baru ditambahkan dari PLGen.` : "Sudah up-to-date. Tidak ada PL baru dari PLGen.");
+    }
+  };
   const [showImport, setShowImport] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [prefill, setPrefill] = useState(null);
@@ -133,6 +152,8 @@ export default function Shipments() {
         </DropdownMenuContent>
       </DropdownMenu>
       {can("pengiriman.upload_multi_packing") && <button onClick={() => setBulkPackingOpen(true)} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"><Upload className="h-4 w-4" />Upload Multi Packing List</button>}
+      {isPlgenSyncConfigured && <button onClick={handlePlgenSync} disabled={syncing} title="Ambil PL terbaru dari PLGen sebagai pengiriman baru" className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-60">{syncing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}{syncing ? "Syncing..." : "Sync PLGen"}</button>}
+      {syncMsg && <p className="w-full text-sm text-slate-500">{syncMsg}</p>}
     </div>
 
     {showImport && <div className="mb-6"><ImportPanel onImport={importDo} /></div>}
