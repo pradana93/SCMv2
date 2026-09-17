@@ -23,6 +23,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import PullToRefresh from "@/components/shipping/PullToRefresh";
 import { ensureOutlet } from "@/components/shipping/ensureOutlet";
 import { generateShipmentBarcodes } from "@/components/shipping/shipmentBarcodeUtils";
+import { usePlgenSync } from "@/components/shipping/usePlgenSync";
 
 export default function Shipments() {
   const { dateFrom, setDateFrom, dateTo, setDateTo } = useShipmentsDateFilter();
@@ -46,6 +47,7 @@ export default function Shipments() {
     return unsubscribe;
   }, [queryClient, dateFrom, dateTo, warehouses]);
   const { updateStatus, deliverShipment, deleteShipment, deleteShipments } = useShipmentMutations();
+  usePlgenSync();
   const [showImport, setShowImport] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [prefill, setPrefill] = useState(null);

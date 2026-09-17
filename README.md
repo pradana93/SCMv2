@@ -41,6 +41,18 @@ npm run build
 
 Any static host works (Vercel, Netlify, etc.): build command `npm run build`, output `dist`. Set the same `VITE_*` env vars in the host dashboard.
 
+## PLGen auto-sync (optional)
+
+When set, visiting Pengiriman auto-creates Shipments from new PLGen exports
+(read-only on PLGen's project — nothing in PLGen is modified):
+
+- `VITE_PLGEN_SUPABASE_URL`, `VITE_PLGEN_SUPABASE_ANON_KEY`
+- Dedup by `do_number` (= PLGen `delivery_no`); outlet auto-created in master.
+- Delivery date = export date (WIB) + 1 working day (Sundays skipped).
+- Origin warehouse defaults live in `WAREHOUSE_BY_COMPANY` in
+  `src/api/functions/plgenSync.js` (`BBT → Gudang Batu Ceper`,
+  `BBB → Batu Ceper`).
+
 ## Project map
 
 - `src/api/supabaseClient.js` — Supabase client.
